@@ -1,0 +1,169 @@
+name: christiangeorgelucas/robotstxt-tools
+version: 0.1.0
+language: typescript
+description: >-
+  Deterministic parsing and RFC 9309 evaluation of web-crawling control
+  files — robots.txt and sitemap.xml/sitemap-index — over caller-supplied
+  TEXT only (never fetched over the network). Wraps robots-parser (MIT) for
+  the RFC 9309 Allow/Disallow longest-match precedence algorithm and
+  fast-xml-parser (MIT, external entities/DTDs rejected) for sitemap XML:
+  parse a robots.txt into its structured per-user-agent rule groups, test
+  whether a URL/path is allowed or disallowed for a given user-agent,
+  read a user-agent's crawl-delay and effective rule group (with "*"
+  wildcard fallback), list every user-agent and every disallowed path
+  mentioned, extract the Sitemap: URLs and Host: directive from a
+  robots.txt, find which line governs a matching decision, and parse a
+  sitemap urlset or sitemap-index into its URL/child-sitemap entries,
+  detect which kind a document is, count its entries, or extract just its
+  URLs. Every node is a pure, stateless, single-input-to-single-output
+  transform; input size and sitemap entry counts are bounded (the
+  sitemaps.org 50,000-URL cap) and malformed input returns a structured
+  error rather than crashing.
+license: MIT
+author: Christian George Lucas
+tags:
+  - robots-txt
+  - robots-exclusion-protocol
+  - sitemap
+  - sitemap-index
+  - rfc-9309
+  - web-crawling
+  - crawler
+  - seo
+  - url-discovery
+nodes:
+    - name: ParseRobotsTxt
+      input: ParseRobotsInput
+      output: ParseRobotsOutput
+      description: >-
+        Parse a robots.txt document into its full structured form: every
+        RFC 9309 rule group (the user-agent tokens it applies to, its Allow
+        and Disallow path rules with source line numbers, and its
+        Crawl-delay if any), plus the document-level Sitemap: URLs and
+        Host: directive. The general-purpose parse the other robots.txt
+        nodes are specialized views of.
+    - name: IsAllowed
+      input: CheckAccessInput
+      output: CheckAccessOutput
+      description: >-
+        Test whether a URL or path is ALLOWED for a given user-agent under
+        a supplied robots.txt document, using RFC 9309 longest-match
+        precedence (the most specific — longest — matching Allow/Disallow
+        rule wins; a tie between an Allow and a Disallow of equal length
+        resolves to Allow). Accepts an absolute URL or a path starting
+        with "/". No matching rule at all is a valid, allowed outcome
+        (`matched=false, allowed=true`) per RFC 9309's default-allow.
+    - name: IsDisallowed
+      input: CheckAccessInput
+      output: CheckAccessOutput
+      description: >-
+        Test whether a URL or path is DISALLOWED for a given user-agent
+        under a supplied robots.txt document — the exact logical negation
+        of IsAllowed's `allowed` field, provided as its own node for
+        callers whose flow reads more naturally as a disallow check. Same
+        RFC 9309 longest-match precedence and input contract as IsAllowed.
+    - name: GetCrawlDelay
+      input: GetCrawlDelayInput
+      output: GetCrawlDelayOutput
+      description: >-
+        Read the Crawl-delay (in seconds) that applies to a user-agent
+        under a supplied robots.txt document, resolved through the same
+        RFC 9309 group-selection as GetEffectiveRuleGroup (named group, or
+        "*" fallback). `has_value=false` when no Crawl-delay applies — RFC
+        9309 defines no implicit default, so absence is reported
+        explicitly rather than defaulted to 0.
+    - name: ListUserAgents
+      input: ListUserAgentsInput
+      output: ListUserAgentsOutput
+      description: >-
+        List every user-agent product token mentioned in a robots.txt
+        document's "User-agent:" lines, exactly as written, de-duplicated,
+        in first-appearance order.
+    - name: ExtractRobotsSitemapUrls
+      input: ExtractRobotsSitemapUrlsInput
+      output: ExtractRobotsSitemapUrlsOutput
+      description: >-
+        Extract every Sitemap: URL declared in a robots.txt document, in
+        source order. These are document discovery URLs only — this node
+        does not fetch them; feed one into ParseSitemap/ParseSitemapIndex
+        once your own flow has retrieved its content.
+    - name: ListDisallowedPaths
+      input: ListDisallowedPathsInput
+      output: ListDisallowedPathsOutput
+      description: >-
+        List every Disallow path pattern in the rule group that applies to
+        a given user-agent (resolved via the same RFC 9309 group-selection
+        as GetEffectiveRuleGroup: an exact/prefix product-token match, or
+        the "*" group on fallback). Returns an empty list, not an error,
+        when the selected group has no Disallow rules.
+    - name: GetEffectiveRuleGroup
+      input: GetEffectiveRuleGroupInput
+      output: GetEffectiveRuleGroupOutput
+      description: >-
+        Resolve which RFC 9309 rule group actually governs a given
+        user-agent: the most specific group whose user-agent token matches
+        (case-insensitive), falling back to the "*" wildcard group when no
+        named group matches. `found=false` when neither a named nor a
+        wildcard group exists in the document at all.
+    - name: GetPreferredHost
+      input: GetPreferredHostInput
+      output: GetPreferredHostOutput
+      description: >-
+        Read the preferred-host value from a robots.txt document's Host:
+        directive (a widely-deployed extension beyond core RFC 9309).
+        `has_value=false` when the document declares no Host: line.
+    - name: GetMatchingLine
+      input: GetMatchingLineInput
+      output: GetMatchingLineOutput
+      description: >-
+        Find the 1-based source line number of the Allow/Disallow rule
+        that governs a given URL/user-agent pair under a supplied
+        robots.txt document — useful for auditing or explaining an
+        IsAllowed/IsDisallowed decision. `matched=false` (line=-1) when no
+        explicit rule matched (RFC 9309 default-allow applies).
+    - name: ParseSitemap
+      input: ParseSitemapInput
+      output: ParseSitemapOutput
+      description: >-
+        Parse a sitemap.xml <urlset> document into its list of URL
+        entries: loc, lastmod, changefreq, and priority for each <url>.
+        External XML entities and DTDs are rejected outright (no XXE);
+        parsing stops and `truncated=true` is reported past the
+        sitemaps.org 50,000-URL-per-file limit. A document that is not a
+        urlset (e.g. a sitemap-index) returns a structured error naming
+        the actual root element.
+    - name: ParseSitemapIndex
+      input: ParseSitemapIndexInput
+      output: ParseSitemapIndexOutput
+      description: >-
+        Parse a sitemap-index XML document into its list of child sitemap
+        entries: loc and lastmod for each <sitemap>. Same XXE-rejection
+        and 50,000-entry cap as ParseSitemap. A document that is not a
+        sitemapindex returns a structured error naming the actual root
+        element.
+    - name: DetectSitemapType
+      input: DetectSitemapTypeInput
+      output: DetectSitemapTypeOutput
+      description: >-
+        Classify an XML document as a sitemap urlset, a sitemap-index, or
+        neither ("unknown"), by its root element — without parsing its
+        entries. The cheap dispatch check before calling ParseSitemap or
+        ParseSitemapIndex.
+    - name: CountSitemapUrls
+      input: CountSitemapUrlsInput
+      output: CountSitemapUrlsOutput
+      description: >-
+        Count the entries in a sitemap document — <url> children for a
+        urlset, <sitemap> children for a sitemap-index — without
+        materializing the full entry list. Reports which kind of document
+        it counted; `truncated=true` past the 50,000-entry cap (the
+        reported count is capped, not the true total).
+    - name: ExtractSitemapLocs
+      input: ExtractSitemapLocsInput
+      output: ExtractSitemapLocsOutput
+      description: >-
+        Extract just the URLs (<loc> values) from a sitemap document of
+        either kind — a urlset's page URLs, or a sitemap-index's child
+        sitemap URLs — without the lastmod/changefreq/priority detail
+        ParseSitemap/ParseSitemapIndex also return. Same XXE-rejection and
+        50,000-entry cap.

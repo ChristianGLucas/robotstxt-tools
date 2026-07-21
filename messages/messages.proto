@@ -1,0 +1,322 @@
+// This file defines the data contracts (messages) for your Axiom package.
+// Every node's --input and --output refers to a message defined here.
+//
+// Run `axiom create message <Name>` to scaffold a new message below.
+// Run `axiom generate` to compile these definitions into language bindings in gen/.
+//
+// DOCUMENTATION
+//   Comments written directly above a message or field declaration are extracted
+//   automatically at publish time and shown in the Axiom registry as documentation.
+//   Write your descriptions there — no separate doc files needed.
+//
+//   Leading comment  (no blank line before the declaration) → registry description ✓
+//   Detached comment (blank line before the declaration)    → ignored by registry  ✗
+//
+// This file is yours to edit. Axiom only appends new message blocks — it never
+// overwrites or removes content you have written.
+
+syntax = "proto3";
+
+package christiangeorgelucas.robotstxt_tools;
+
+// A structured error. Every node in this package returns ok=false + this
+// message instead of throwing, for any malformed, oversized, or otherwise
+// invalid input.
+message RobotsToolsError {
+  // Machine-readable failure category, e.g. "EMPTY_INPUT", "INPUT_TOO_LARGE",
+  // "PARSE_ERROR", "URL_ORIGIN_MISMATCH", "XML_UNSAFE_ENTITY", "NOT_XML".
+  string code = 1;
+  // Human-readable detail.
+  string message = 2;
+}
+
+// The canonical robots.txt envelope. The caller always supplies the raw text
+// of an already-fetched robots.txt document — this package never fetches
+// anything itself.
+message RobotsDocument {
+  // Raw robots.txt file content, exactly as served (any RFC 9309-conformant
+  // document). Capped at 3 MiB.
+  string robots_txt = 1;
+  // Optional origin the robots.txt was served from, e.g. "https://example.com".
+  // Used only to validate/resolve an absolute `url` passed to a matching node
+  // against this document's own site; it never triggers a network fetch and
+  // has no effect on the RFC 9309 matching algorithm itself. When a matching
+  // node is given a path (starting with "/") instead of an absolute URL, this
+  // field is not needed at all.
+  string site_url = 2;
+}
+
+// One Allow rule as it appeared in a rule group, in source order.
+message RobotsPathRule {
+  // The path pattern exactly as written after "Allow:"/"Disallow:" (may
+  // contain "*" wildcards and a trailing "$" end-anchor).
+  string path = 1;
+  // 1-based source line number the rule appeared on.
+  int32 line = 2;
+}
+
+// One RFC 9309 rule group: a run of "User-agent:" lines followed by the
+// Allow/Disallow/Crawl-delay lines that apply to all of them.
+message RobotsRuleGroup {
+  // Product tokens this group applies to, exactly as written (e.g. "*",
+  // "Googlebot"). Matching against a real crawler UA is case-insensitive
+  // prefix matching per RFC 9309 — see GetEffectiveRuleGroup.
+  repeated string user_agents = 1;
+  repeated RobotsPathRule allow = 2;
+  repeated RobotsPathRule disallow = 3;
+  // True if this group specified a Crawl-delay line.
+  bool has_crawl_delay = 4;
+  // Crawl-delay in seconds. Only meaningful when has_crawl_delay is true.
+  double crawl_delay = 5;
+  // 1-based source line of the first "User-agent:" line in this group.
+  int32 start_line = 6;
+  // 1-based source line of the last rule line belonging to this group.
+  int32 end_line = 7;
+}
+
+// Full structured parse of a robots.txt document: every rule group plus the
+// document-level Sitemap: and Host: directives.
+message ParsedRobots {
+  repeated RobotsRuleGroup groups = 1;
+  // Sitemap: URLs declared anywhere in the document, in source order.
+  repeated string sitemaps = 2;
+  // Host: preferred-host directive value, or empty if none was declared.
+  string preferred_host = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+}
+
+// Input for parsing a robots.txt document into its structured rule groups.
+message ParseRobotsInput {
+  RobotsDocument doc = 1;
+}
+
+message ParseRobotsOutput {
+  ParsedRobots result = 1;
+}
+
+// Input for testing whether a URL/path is allowed or disallowed for a given
+// user-agent under a supplied robots.txt document.
+message CheckAccessInput {
+  RobotsDocument doc = 1;
+  // The URL or path to test. Either an absolute URL (e.g.
+  // "https://example.com/private/page") or a path starting with "/" (e.g.
+  // "/private/page"). A path is always evaluated against `doc`, regardless
+  // of `doc.site_url`.
+  string url = 2;
+  // The crawler product token to evaluate, e.g. "Googlebot" or "*".
+  string user_agent = 3;
+}
+
+message CheckAccessOutput {
+  // True if `url` is allowed for `user_agent` under RFC 9309 longest-match
+  // precedence (ties resolve to Allow).
+  bool allowed = 1;
+  // True if an explicit Allow/Disallow rule matched `url` (as opposed to the
+  // RFC 9309 default-allow with no matching rule at all).
+  bool matched = 2;
+  // 1-based source line of the matching rule, or -1 if none matched.
+  int32 matched_line = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+  // The exact logical negation of `allowed`. Populated on both IsAllowed
+  // and IsDisallowed (which share this output shape) so a caller reading
+  // either node's result never has to remember which field name to negate.
+  bool disallowed = 6;
+}
+
+// Input for reading the Crawl-delay declared for a user-agent.
+message GetCrawlDelayInput {
+  RobotsDocument doc = 1;
+  string user_agent = 2;
+}
+
+message GetCrawlDelayOutput {
+  // Crawl-delay in seconds. Only meaningful when has_value is true.
+  double crawl_delay = 1;
+  // False when no Crawl-delay applies to this user-agent (RFC 9309 does not
+  // define a default value — absence is a distinct, valid outcome).
+  bool has_value = 2;
+  bool ok = 3;
+  RobotsToolsError error = 4;
+}
+
+// Input for listing every user-agent product token mentioned anywhere in a
+// robots.txt document.
+message ListUserAgentsInput {
+  RobotsDocument doc = 1;
+}
+
+message ListUserAgentsOutput {
+  // Every token exactly as written, de-duplicated, in first-appearance order.
+  repeated string user_agents = 1;
+  bool ok = 2;
+  RobotsToolsError error = 3;
+}
+
+// Input for extracting the Sitemap: URLs declared in a robots.txt document.
+message ExtractRobotsSitemapUrlsInput {
+  RobotsDocument doc = 1;
+}
+
+message ExtractRobotsSitemapUrlsOutput {
+  repeated string sitemap_urls = 1;
+  bool ok = 2;
+  RobotsToolsError error = 3;
+}
+
+// Input for listing every Disallow path in the rule group that applies to a
+// user-agent.
+message ListDisallowedPathsInput {
+  RobotsDocument doc = 1;
+  string user_agent = 2;
+}
+
+message ListDisallowedPathsOutput {
+  repeated string paths = 1;
+  // The user-agent token of the group actually selected (an exact/prefix
+  // match, or "*" on wildcard fallback, or empty if no group applies at all).
+  string matched_group_user_agent = 2;
+  bool ok = 3;
+  RobotsToolsError error = 4;
+}
+
+// Input for resolving which rule group applies to a user-agent, per RFC 9309
+// group-selection: the most specific product-token match wins, falling back
+// to the "*" group when no named group matches.
+message GetEffectiveRuleGroupInput {
+  RobotsDocument doc = 1;
+  string user_agent = 2;
+}
+
+message GetEffectiveRuleGroupOutput {
+  // The selected group. Empty (no allow/disallow rules, empty user_agents)
+  // when neither a named nor a wildcard group exists in the document.
+  RobotsRuleGroup group = 1;
+  // True if a group was found (named or wildcard fallback).
+  bool found = 2;
+  bool ok = 3;
+  RobotsToolsError error = 4;
+}
+
+// Input for reading the Host: preferred-host directive.
+message GetPreferredHostInput {
+  RobotsDocument doc = 1;
+}
+
+message GetPreferredHostOutput {
+  string host = 1;
+  bool has_value = 2;
+  bool ok = 3;
+  RobotsToolsError error = 4;
+}
+
+// Input for finding which robots.txt line (if any) governs a given
+// URL/user-agent pair — useful for auditing/debugging a matching decision.
+message GetMatchingLineInput {
+  RobotsDocument doc = 1;
+  string url = 2;
+  string user_agent = 3;
+}
+
+message GetMatchingLineOutput {
+  // 1-based line number of the matching directive, or -1 if none matched.
+  int32 line = 1;
+  bool matched = 2;
+  bool ok = 3;
+  RobotsToolsError error = 4;
+}
+
+// The canonical sitemap envelope. The caller always supplies the raw XML
+// text of an already-fetched sitemap.xml or sitemap-index.xml document.
+message SitemapDocument {
+  // Raw sitemap XML content. Capped at 3 MiB. External entities and DTDs
+  // are rejected, not resolved.
+  string xml = 1;
+}
+
+// One <url> entry from a sitemap urlset document.
+message SitemapUrlEntry {
+  string loc = 1;
+  // Optional W3C-datetime last-modified string, exactly as written.
+  string lastmod = 2;
+  // Optional changefreq value, exactly as written (e.g. "daily").
+  string changefreq = 3;
+  // Priority in [0.0, 1.0]. Only meaningful when has_priority is true.
+  double priority = 4;
+  bool has_priority = 5;
+}
+
+message ParseSitemapInput {
+  SitemapDocument doc = 1;
+}
+
+message ParseSitemapOutput {
+  repeated SitemapUrlEntry urls = 1;
+  int32 count = 2;
+  // True if the document declared more than 50,000 <url> entries (the
+  // sitemaps.org protocol limit) and parsing stopped at the cap.
+  bool truncated = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+}
+
+// One <sitemap> child entry from a sitemap-index document.
+message SitemapIndexEntry {
+  string loc = 1;
+  string lastmod = 2;
+}
+
+message ParseSitemapIndexInput {
+  SitemapDocument doc = 1;
+}
+
+message ParseSitemapIndexOutput {
+  repeated SitemapIndexEntry sitemaps = 1;
+  int32 count = 2;
+  bool truncated = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+}
+
+// Input for classifying an XML document as a sitemap urlset, a
+// sitemap-index, or neither.
+message DetectSitemapTypeInput {
+  SitemapDocument doc = 1;
+}
+
+message DetectSitemapTypeOutput {
+  // One of "urlset", "sitemapindex", "unknown".
+  string doc_type = 1;
+  bool ok = 2;
+  RobotsToolsError error = 3;
+}
+
+// Input for counting the entries in a sitemap document (a urlset's <url>
+// children, or a sitemap-index's <sitemap> children).
+message CountSitemapUrlsInput {
+  SitemapDocument doc = 1;
+}
+
+message CountSitemapUrlsOutput {
+  int32 count = 1;
+  // Which kind of document was counted: "urlset" or "sitemapindex".
+  string doc_type = 2;
+  bool truncated = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+}
+
+// Input for extracting just the URLs (<loc> values) from a sitemap document
+// of either kind.
+message ExtractSitemapLocsInput {
+  SitemapDocument doc = 1;
+}
+
+message ExtractSitemapLocsOutput {
+  repeated string locs = 1;
+  string doc_type = 2;
+  bool truncated = 3;
+  bool ok = 4;
+  RobotsToolsError error = 5;
+}
