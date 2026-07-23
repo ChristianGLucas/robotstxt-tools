@@ -166,8 +166,14 @@ export function buildTokenBuckets(groups: RawGroup[]): Map<string, EffectiveBuck
         bucket = { allow: [], disallow: [], hasCrawlDelay: false, crawlDelay: 0 };
         buckets.set(token, bucket);
       }
-      bucket.allow.push(...group.allow);
-      bucket.disallow.push(...group.disallow);
+      // Plain for-loops, not `push(...array)` — spreading a very large
+      // array into push()'s arguments can overflow the JS call stack
+      // ("Maximum call stack size exceeded") on a group with a huge number
+      // of rules. There is no rule-count cap in this package (the platform
+      // owns resource limits), so a legitimately large document must not
+      // crash here.
+      for (const rule of group.allow) bucket.allow.push(rule);
+      for (const rule of group.disallow) bucket.disallow.push(rule);
       if (group.hasCrawlDelay) {
         // Last write wins in document order, matching robots-parser's plain
         // property assignment (`rules[userAgent].crawlDelay = delay`).

@@ -64,4 +64,21 @@ describe('ListDisallowedPaths', () => {
     expect(result.getOk()).toBe(false);
     expect(result.getError()?.getCode()).toBe('EMPTY_INPUT');
   });
+
+  // Regression: merging a single group's rules into a token bucket used to
+  // do `bucket.disallow.push(...group.disallow)`, which overflows the JS
+  // call stack ("Maximum call stack size exceeded") once a group has tens
+  // of thousands of rules. There is no rule-count cap in this package (the
+  // platform owns resource limits), so a large-but-valid group must not
+  // crash the node.
+  it('handles a single group with a very large number of rules without crashing', () => {
+    const n = 60000;
+    const lines = ['User-agent: *'];
+    for (let i = 0; i < n; i++) lines.push(`Disallow: /path/${i}`);
+    const result = listDisallowedPaths(testContext, input(lines.join('\n'), '*'));
+    expect(result.getOk()).toBe(true);
+    expect(result.getPathsList()).toHaveLength(n);
+    expect(result.getPathsList()[0]).toBe('/path/0');
+    expect(result.getPathsList()[n - 1]).toBe(`/path/${n - 1}`);
+  });
 });

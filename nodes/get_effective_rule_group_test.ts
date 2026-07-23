@@ -56,4 +56,18 @@ describe('GetEffectiveRuleGroup', () => {
     expect(result.getOk()).toBe(false);
     expect(result.getError()?.getCode()).toBe('EMPTY_INPUT');
   });
+
+  // Regression: see the matching note in list_disallowed_paths_test.ts —
+  // merging a single group's rules used to overflow the JS call stack via
+  // `push(...hugeArray)`. No rule-count cap here (the platform owns
+  // resource limits), so a large-but-valid group must not crash the node.
+  it('handles a single group with a very large number of rules without crashing', () => {
+    const n = 60000;
+    const lines = ['User-agent: *'];
+    for (let i = 0; i < n; i++) lines.push(`Disallow: /path/${i}`);
+    const result = getEffectiveRuleGroup(testContext, input(lines.join('\n'), '*'));
+    expect(result.getOk()).toBe(true);
+    expect(result.getFound()).toBe(true);
+    expect(result.getGroup()!.getDisallowList()).toHaveLength(n);
+  });
 });
