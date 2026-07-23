@@ -6,7 +6,7 @@ caller-supplied **text only**. This package never fetches anything over the
 network; retrieving the documents is the caller's job, this package only
 evaluates the text you already have.
 
-Built for the [Axiom](https://axiom.dev) marketplace, handle
+Built for the [Axiom](https://axiomide.com) marketplace, handle
 `christiangeorgelucas`.
 
 ## What it wraps
