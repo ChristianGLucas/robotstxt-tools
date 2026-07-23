@@ -17,8 +17,6 @@
 // not expose that intermediate structure publicly. Neither step involves
 // wildcard/anchor pattern matching.
 
-export const MAX_INPUT_BYTES = 3 * 1024 * 1024; // 3 MiB — matches the platform's ~4 MiB gRPC message cap with headroom.
-
 export interface RawRule {
   path: string;
   line: number;

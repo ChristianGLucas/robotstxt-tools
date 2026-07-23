@@ -28,7 +28,6 @@ describe('ParseSitemap', () => {
     const result = parseSitemap(testContext, input(GOLDEN_URLSET));
     expect(result.getOk()).toBe(true);
     expect(result.getCount()).toBe(2);
-    expect(result.getTruncated()).toBe(false);
 
     const urls = result.getUrlsList();
     expect(urls[0].getLoc()).toBe('https://example.com/a');
@@ -70,29 +69,6 @@ describe('ParseSitemap', () => {
     const result = parseSitemap(testContext, input(''));
     expect(result.getOk()).toBe(false);
     expect(result.getError()?.getCode()).toBe('EMPTY_INPUT');
-  });
-
-  it('returns a structured error, not a crash, for oversized input', () => {
-    const huge = '<urlset>' + '<url><loc>https://example.com/x</loc></url>'.repeat(120000) + '</urlset>';
-    const result = parseSitemap(testContext, input(huge));
-    expect(result.getOk()).toBe(false);
-    expect(result.getError()?.getCode()).toBe('INPUT_TOO_LARGE');
-  });
-
-  it('caps parsed entries at the sitemaps.org 50,000-URL limit and reports truncated=true', () => {
-    const n = 50005;
-    let xml = '<urlset>';
-    for (let i = 0; i < n; i++) {
-      xml += `<url><loc>u${i}</loc></url>`;
-    }
-    xml += '</urlset>';
-    expect(Buffer.byteLength(xml, 'utf8')).toBeLessThan(3 * 1024 * 1024);
-
-    const result = parseSitemap(testContext, input(xml));
-    expect(result.getOk()).toBe(true);
-    expect(result.getTruncated()).toBe(true);
-    expect(result.getCount()).toBe(50000);
-    expect(result.getUrlsList()).toHaveLength(50000);
   });
 
   it('is deterministic across repeated calls with the same input', () => {

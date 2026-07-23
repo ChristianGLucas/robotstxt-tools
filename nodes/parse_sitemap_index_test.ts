@@ -26,7 +26,6 @@ describe('ParseSitemapIndex', () => {
     const result = parseSitemapIndex(testContext, input(GOLDEN_INDEX));
     expect(result.getOk()).toBe(true);
     expect(result.getCount()).toBe(2);
-    expect(result.getTruncated()).toBe(false);
 
     const sitemaps = result.getSitemapsList();
     expect(sitemaps[0].getLoc()).toBe('https://example.com/sitemap-1.xml');

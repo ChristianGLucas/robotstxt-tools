@@ -782,9 +782,6 @@ export class ParseSitemapOutput extends jspb.Message {
   getCount(): number;
   setCount(value: number): void;
 
-  getTruncated(): boolean;
-  setTruncated(value: boolean): void;
-
   getOk(): boolean;
   setOk(value: boolean): void;
 
@@ -807,7 +804,6 @@ export namespace ParseSitemapOutput {
   export type AsObject = {
     urlsList: Array<SitemapUrlEntry.AsObject>,
     count: number,
-    truncated: boolean,
     ok: boolean,
     error?: RobotsToolsError.AsObject,
   }
@@ -868,9 +864,6 @@ export class ParseSitemapIndexOutput extends jspb.Message {
   getCount(): number;
   setCount(value: number): void;
 
-  getTruncated(): boolean;
-  setTruncated(value: boolean): void;
-
   getOk(): boolean;
   setOk(value: boolean): void;
 
@@ -893,7 +886,6 @@ export namespace ParseSitemapIndexOutput {
   export type AsObject = {
     sitemapsList: Array<SitemapIndexEntry.AsObject>,
     count: number,
-    truncated: boolean,
     ok: boolean,
     error?: RobotsToolsError.AsObject,
   }
@@ -980,9 +972,6 @@ export class CountSitemapUrlsOutput extends jspb.Message {
   getDocType(): string;
   setDocType(value: string): void;
 
-  getTruncated(): boolean;
-  setTruncated(value: boolean): void;
-
   getOk(): boolean;
   setOk(value: boolean): void;
 
@@ -1005,7 +994,6 @@ export namespace CountSitemapUrlsOutput {
   export type AsObject = {
     count: number,
     docType: string,
-    truncated: boolean,
     ok: boolean,
     error?: RobotsToolsError.AsObject,
   }
@@ -1042,9 +1030,6 @@ export class ExtractSitemapLocsOutput extends jspb.Message {
   getDocType(): string;
   setDocType(value: string): void;
 
-  getTruncated(): boolean;
-  setTruncated(value: boolean): void;
-
   getOk(): boolean;
   setOk(value: boolean): void;
 
@@ -1067,7 +1052,6 @@ export namespace ExtractSitemapLocsOutput {
   export type AsObject = {
     locsList: Array<string>,
     docType: string,
-    truncated: boolean,
     ok: boolean,
     error?: RobotsToolsError.AsObject,
   }

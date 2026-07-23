@@ -6315,8 +6315,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.toObject = functio
 urlsList: jspb.Message.toObjectList(msg.getUrlsList(),
     proto.christiangeorgelucas.robotstxt_tools.SitemapUrlEntry.toObject, includeInstance),
 count: jspb.Message.getFieldWithDefault(msg, 2, 0),
-truncated: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-ok: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+ok: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
 error: (f = msg.getError()) && proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.toObject(includeInstance, f)
   };
 
@@ -6365,13 +6364,9 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.deserializeBinaryF
       break;
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setTruncated(value);
-      break;
-    case 4:
-      var value = /** @type {boolean} */ (reader.readBool());
       msg.setOk(value);
       break;
-    case 5:
+    case 4:
       var value = new proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError;
       reader.readMessage(value,proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.deserializeBinaryFromReader);
       msg.setError(value);
@@ -6420,24 +6415,17 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.serializeBinaryToW
       f
     );
   }
-  f = message.getTruncated();
+  f = message.getOk();
   if (f) {
     writer.writeBool(
       3,
       f
     );
   }
-  f = message.getOk();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
   f = message.getError();
   if (f != null) {
     writer.writeMessage(
-      5,
+      4,
       f,
       proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.serializeBinaryToWriter
     );
@@ -6502,10 +6490,10 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.setCount
 
 
 /**
- * optional bool truncated = 3;
+ * optional bool ok = 3;
  * @return {boolean}
  */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getTruncated = function() {
+proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getOk = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -6514,36 +6502,18 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getTrunc
  * @param {boolean} value
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput} returns this
  */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.setTruncated = function(value) {
+proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.setOk = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
 /**
- * optional bool ok = 4;
- * @return {boolean}
- */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getOk = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput} returns this
- */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.setOk = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional RobotsToolsError error = 5;
+ * optional RobotsToolsError error = 4;
  * @return {?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError}
  */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getError = function() {
   return /** @type{?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError} */ (
-    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 5));
+    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 4));
 };
 
 
@@ -6552,7 +6522,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.getError
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput} returns this
 */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.setError = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
@@ -6570,7 +6540,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.clearErr
  * @return {boolean}
  */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapOutput.prototype.hasError = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
@@ -6927,8 +6897,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.toObject = fu
 sitemapsList: jspb.Message.toObjectList(msg.getSitemapsList(),
     proto.christiangeorgelucas.robotstxt_tools.SitemapIndexEntry.toObject, includeInstance),
 count: jspb.Message.getFieldWithDefault(msg, 2, 0),
-truncated: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-ok: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+ok: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
 error: (f = msg.getError()) && proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.toObject(includeInstance, f)
   };
 
@@ -6977,13 +6946,9 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.deserializeBi
       break;
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setTruncated(value);
-      break;
-    case 4:
-      var value = /** @type {boolean} */ (reader.readBool());
       msg.setOk(value);
       break;
-    case 5:
+    case 4:
       var value = new proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError;
       reader.readMessage(value,proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.deserializeBinaryFromReader);
       msg.setError(value);
@@ -7032,24 +6997,17 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.serializeBina
       f
     );
   }
-  f = message.getTruncated();
+  f = message.getOk();
   if (f) {
     writer.writeBool(
       3,
       f
     );
   }
-  f = message.getOk();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
   f = message.getError();
   if (f != null) {
     writer.writeMessage(
-      5,
+      4,
       f,
       proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.serializeBinaryToWriter
     );
@@ -7114,10 +7072,10 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.set
 
 
 /**
- * optional bool truncated = 3;
+ * optional bool ok = 3;
  * @return {boolean}
  */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.getTruncated = function() {
+proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.getOk = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -7126,36 +7084,18 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.get
  * @param {boolean} value
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput} returns this
  */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.setTruncated = function(value) {
+proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.setOk = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
 /**
- * optional bool ok = 4;
- * @return {boolean}
- */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.getOk = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput} returns this
- */
-proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.setOk = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional RobotsToolsError error = 5;
+ * optional RobotsToolsError error = 4;
  * @return {?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError}
  */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.getError = function() {
   return /** @type{?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError} */ (
-    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 5));
+    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 4));
 };
 
 
@@ -7164,7 +7104,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.get
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput} returns this
 */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.setError = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
@@ -7182,7 +7122,7 @@ proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.cle
  * @return {boolean}
  */
 proto.christiangeorgelucas.robotstxt_tools.ParseSitemapIndexOutput.prototype.hasError = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
@@ -7733,8 +7673,7 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.toObject = fun
   var f, obj = {
 count: jspb.Message.getFieldWithDefault(msg, 1, 0),
 docType: jspb.Message.getFieldWithDefault(msg, 2, ""),
-truncated: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-ok: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+ok: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
 error: (f = msg.getError()) && proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.toObject(includeInstance, f)
   };
 
@@ -7782,13 +7721,9 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.deserializeBin
       break;
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setTruncated(value);
-      break;
-    case 4:
-      var value = /** @type {boolean} */ (reader.readBool());
       msg.setOk(value);
       break;
-    case 5:
+    case 4:
       var value = new proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError;
       reader.readMessage(value,proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.deserializeBinaryFromReader);
       msg.setError(value);
@@ -7836,24 +7771,17 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.serializeBinar
       f
     );
   }
-  f = message.getTruncated();
+  f = message.getOk();
   if (f) {
     writer.writeBool(
       3,
       f
     );
   }
-  f = message.getOk();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
   f = message.getError();
   if (f != null) {
     writer.writeMessage(
-      5,
+      4,
       f,
       proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.serializeBinaryToWriter
     );
@@ -7898,10 +7826,10 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.setD
 
 
 /**
- * optional bool truncated = 3;
+ * optional bool ok = 3;
  * @return {boolean}
  */
-proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getTruncated = function() {
+proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getOk = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -7910,36 +7838,18 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getT
  * @param {boolean} value
  * @return {!proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput} returns this
  */
-proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.setTruncated = function(value) {
+proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.setOk = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
 /**
- * optional bool ok = 4;
- * @return {boolean}
- */
-proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getOk = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput} returns this
- */
-proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.setOk = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional RobotsToolsError error = 5;
+ * optional RobotsToolsError error = 4;
  * @return {?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError}
  */
 proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getError = function() {
   return /** @type{?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError} */ (
-    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 5));
+    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 4));
 };
 
 
@@ -7948,7 +7858,7 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.getE
  * @return {!proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput} returns this
 */
 proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.setError = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
@@ -7966,7 +7876,7 @@ proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.clea
  * @return {boolean}
  */
 proto.christiangeorgelucas.robotstxt_tools.CountSitemapUrlsOutput.prototype.hasError = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
@@ -8162,8 +8072,7 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.toObject = f
   var f, obj = {
 locsList: (f = jspb.Message.getRepeatedField(msg, 1)) == null ? undefined : f,
 docType: jspb.Message.getFieldWithDefault(msg, 2, ""),
-truncated: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-ok: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+ok: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
 error: (f = msg.getError()) && proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.toObject(includeInstance, f)
   };
 
@@ -8211,13 +8120,9 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.deserializeB
       break;
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setTruncated(value);
-      break;
-    case 4:
-      var value = /** @type {boolean} */ (reader.readBool());
       msg.setOk(value);
       break;
-    case 5:
+    case 4:
       var value = new proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError;
       reader.readMessage(value,proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.deserializeBinaryFromReader);
       msg.setError(value);
@@ -8265,24 +8170,17 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.serializeBin
       f
     );
   }
-  f = message.getTruncated();
+  f = message.getOk();
   if (f) {
     writer.writeBool(
       3,
       f
     );
   }
-  f = message.getOk();
-  if (f) {
-    writer.writeBool(
-      4,
-      f
-    );
-  }
   f = message.getError();
   if (f != null) {
     writer.writeMessage(
-      5,
+      4,
       f,
       proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError.serializeBinaryToWriter
     );
@@ -8346,10 +8244,10 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.se
 
 
 /**
- * optional bool truncated = 3;
+ * optional bool ok = 3;
  * @return {boolean}
  */
-proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.getTruncated = function() {
+proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.getOk = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -8358,36 +8256,18 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.ge
  * @param {boolean} value
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput} returns this
  */
-proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.setTruncated = function(value) {
+proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.setOk = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
 
 /**
- * optional bool ok = 4;
- * @return {boolean}
- */
-proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.getOk = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput} returns this
- */
-proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.setOk = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 4, value);
-};
-
-
-/**
- * optional RobotsToolsError error = 5;
+ * optional RobotsToolsError error = 4;
  * @return {?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError}
  */
 proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.getError = function() {
   return /** @type{?proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError} */ (
-    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 5));
+    jspb.Message.getWrapperField(this, proto.christiangeorgelucas.robotstxt_tools.RobotsToolsError, 4));
 };
 
 
@@ -8396,7 +8276,7 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.ge
  * @return {!proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput} returns this
 */
 proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.setError = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
+  return jspb.Message.setWrapperField(this, 4, value);
 };
 
 
@@ -8414,7 +8294,7 @@ proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.cl
  * @return {boolean}
  */
 proto.christiangeorgelucas.robotstxt_tools.ExtractSitemapLocsOutput.prototype.hasError = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

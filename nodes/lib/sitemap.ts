@@ -1,9 +1,8 @@
 // Shared sitemap.xml / sitemap-index.xml parsing helpers, built on
 // fast-xml-parser (MIT, NaturalIntelligence). fast-xml-parser owns the hard
 // part (real XML tokenizing/parsing); this file only shapes its generic
-// object output into the sitemaps.org vocabulary and enforces the safety
-// bounds every node needs (size cap, external-entity rejection, the
-// sitemaps.org 50,000-entry-per-file limit).
+// object output into the sitemaps.org vocabulary and rejects external
+// entities/DTDs.
 //
 // Security note: fast-xml-parser does not resolve external entities or DTDs
 // at all — it throws ("External entities are not supported") rather than
@@ -13,9 +12,6 @@
 
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import { GuardError } from './guard';
-
-export const MAX_XML_BYTES = 3 * 1024 * 1024; // 3 MiB
-export const MAX_ENTRIES = 50000; // sitemaps.org protocol limit per file
 
 export type SitemapType = 'urlset' | 'sitemapindex' | 'unknown';
 
@@ -92,13 +88,11 @@ function toStr(v: unknown): string {
   return typeof v === 'string' ? v : String(v);
 }
 
-export function toUrlsetEntries(data: Record<string, unknown>): { entries: UrlsetEntry[]; truncated: boolean; totalCount: number } {
+export function toUrlsetEntries(data: Record<string, unknown>): { entries: UrlsetEntry[] } {
   const raw = data.url;
   const list: unknown[] = Array.isArray(raw) ? raw : raw !== undefined ? [raw] : [];
-  const truncated = list.length > MAX_ENTRIES;
-  const capped = truncated ? list.slice(0, MAX_ENTRIES) : list;
 
-  const entries: UrlsetEntry[] = capped.map((u) => {
+  const entries: UrlsetEntry[] = list.map((u) => {
     const obj = typeof u === 'object' && u !== null ? (u as Record<string, unknown>) : {};
     let priority: number | null = null;
     const rawPriority = obj.priority;
@@ -114,19 +108,17 @@ export function toUrlsetEntries(data: Record<string, unknown>): { entries: Urlse
     };
   });
 
-  return { entries, truncated, totalCount: list.length };
+  return { entries };
 }
 
-export function toIndexEntries(data: Record<string, unknown>): { entries: IndexEntry[]; truncated: boolean; totalCount: number } {
+export function toIndexEntries(data: Record<string, unknown>): { entries: IndexEntry[] } {
   const raw = data.sitemap;
   const list: unknown[] = Array.isArray(raw) ? raw : raw !== undefined ? [raw] : [];
-  const truncated = list.length > MAX_ENTRIES;
-  const capped = truncated ? list.slice(0, MAX_ENTRIES) : list;
 
-  const entries: IndexEntry[] = capped.map((s) => {
+  const entries: IndexEntry[] = list.map((s) => {
     const obj = typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : {};
     return { loc: toStr(obj.loc), lastmod: toStr(obj.lastmod) };
   });
 
-  return { entries, truncated, totalCount: list.length };
+  return { entries };
 }

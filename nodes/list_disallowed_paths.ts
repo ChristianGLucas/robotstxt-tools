@@ -1,7 +1,7 @@
 import { ListDisallowedPathsInput, ListDisallowedPathsOutput, RobotsToolsError } from '../gen/messages_pb';
 import { AxiomContext } from '../gen/axiomContext';
-import { checkEmpty, checkSize } from './lib/guard';
-import { parseRobotsTxt, buildTokenBuckets, selectEffectiveBucket, MAX_INPUT_BYTES } from './lib/robots_txt';
+import { checkEmpty } from './lib/guard';
+import { parseRobotsTxt, buildTokenBuckets, selectEffectiveBucket } from './lib/robots_txt';
 
 function errorOutput(code: string, message: string): ListDisallowedPathsOutput {
   const err = new RobotsToolsError();
@@ -28,9 +28,6 @@ export function listDisallowedPaths(ax: AxiomContext, input: ListDisallowedPaths
 
   const emptyErr = checkEmpty(robotsTxt, 'doc.robots_txt');
   if (emptyErr) return errorOutput(emptyErr.code, emptyErr.message);
-
-  const sizeErr = checkSize(robotsTxt, MAX_INPUT_BYTES, 'doc.robots_txt');
-  if (sizeErr) return errorOutput(sizeErr.code, sizeErr.message);
 
   const parsed = parseRobotsTxt(robotsTxt);
   const buckets = buildTokenBuckets(parsed.groups);

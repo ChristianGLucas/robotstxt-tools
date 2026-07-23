@@ -1,7 +1,7 @@
 import { ListUserAgentsInput, ListUserAgentsOutput, RobotsToolsError } from '../gen/messages_pb';
 import { AxiomContext } from '../gen/axiomContext';
-import { checkEmpty, checkSize } from './lib/guard';
-import { parseRobotsTxt, MAX_INPUT_BYTES } from './lib/robots_txt';
+import { checkEmpty } from './lib/guard';
+import { parseRobotsTxt } from './lib/robots_txt';
 
 function errorOutput(code: string, message: string): ListUserAgentsOutput {
   const err = new RobotsToolsError();
@@ -26,9 +26,6 @@ export function listUserAgents(ax: AxiomContext, input: ListUserAgentsInput): Li
 
   const emptyErr = checkEmpty(robotsTxt, 'doc.robots_txt');
   if (emptyErr) return errorOutput(emptyErr.code, emptyErr.message);
-
-  const sizeErr = checkSize(robotsTxt, MAX_INPUT_BYTES, 'doc.robots_txt');
-  if (sizeErr) return errorOutput(sizeErr.code, sizeErr.message);
 
   const parsed = parseRobotsTxt(robotsTxt);
   const seen = new Set<string>();

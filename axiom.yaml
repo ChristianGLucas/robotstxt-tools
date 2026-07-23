@@ -1,5 +1,5 @@
 name: christiangeorgelucas/robotstxt-tools
-version: 0.1.0
+version: 0.1.1
 language: typescript
 description: >-
   Deterministic parsing and RFC 9309 evaluation of web-crawling control
@@ -16,9 +16,8 @@ description: >-
   sitemap urlset or sitemap-index into its URL/child-sitemap entries,
   detect which kind a document is, count its entries, or extract just its
   URLs. Every node is a pure, stateless, single-input-to-single-output
-  transform; input size and sitemap entry counts are bounded (the
-  sitemaps.org 50,000-URL cap) and malformed input returns a structured
-  error rather than crashing.
+  transform; malformed input returns a structured error rather than
+  crashing.
 license: MIT
 author: Christian George Lucas
 tags:
@@ -127,20 +126,17 @@ nodes:
       description: >-
         Parse a sitemap.xml <urlset> document into its list of URL
         entries: loc, lastmod, changefreq, and priority for each <url>.
-        External XML entities and DTDs are rejected outright (no XXE);
-        parsing stops and `truncated=true` is reported past the
-        sitemaps.org 50,000-URL-per-file limit. A document that is not a
-        urlset (e.g. a sitemap-index) returns a structured error naming
-        the actual root element.
+        External XML entities and DTDs are rejected outright (no XXE). A
+        document that is not a urlset (e.g. a sitemap-index) returns a
+        structured error naming the actual root element.
     - name: ParseSitemapIndex
       input: ParseSitemapIndexInput
       output: ParseSitemapIndexOutput
       description: >-
         Parse a sitemap-index XML document into its list of child sitemap
-        entries: loc and lastmod for each <sitemap>. Same XXE-rejection
-        and 50,000-entry cap as ParseSitemap. A document that is not a
-        sitemapindex returns a structured error naming the actual root
-        element.
+        entries: loc and lastmod for each <sitemap>. Same XXE-rejection as
+        ParseSitemap. A document that is not a sitemapindex returns a
+        structured error naming the actual root element.
     - name: DetectSitemapType
       input: DetectSitemapTypeInput
       output: DetectSitemapTypeOutput
@@ -156,8 +152,7 @@ nodes:
         Count the entries in a sitemap document — <url> children for a
         urlset, <sitemap> children for a sitemap-index — without
         materializing the full entry list. Reports which kind of document
-        it counted; `truncated=true` past the 50,000-entry cap (the
-        reported count is capped, not the true total).
+        it counted.
     - name: ExtractSitemapLocs
       input: ExtractSitemapLocsInput
       output: ExtractSitemapLocsOutput
@@ -165,5 +160,4 @@ nodes:
         Extract just the URLs (<loc> values) from a sitemap document of
         either kind — a urlset's page URLs, or a sitemap-index's child
         sitemap URLs — without the lastmod/changefreq/priority detail
-        ParseSitemap/ParseSitemapIndex also return. Same XXE-rejection and
-        50,000-entry cap.
+        ParseSitemap/ParseSitemapIndex also return. Same XXE-rejection.

@@ -23,8 +23,8 @@ package christiangeorgelucas.robotstxt_tools;
 // message instead of throwing, for any malformed, oversized, or otherwise
 // invalid input.
 message RobotsToolsError {
-  // Machine-readable failure category, e.g. "EMPTY_INPUT", "INPUT_TOO_LARGE",
-  // "PARSE_ERROR", "URL_ORIGIN_MISMATCH", "XML_UNSAFE_ENTITY", "NOT_XML".
+  // Machine-readable failure category, e.g. "EMPTY_INPUT", "PARSE_ERROR",
+  // "URL_ORIGIN_MISMATCH", "XML_UNSAFE_ENTITY", "NOT_XML".
   string code = 1;
   // Human-readable detail.
   string message = 2;
@@ -35,7 +35,7 @@ message RobotsToolsError {
 // anything itself.
 message RobotsDocument {
   // Raw robots.txt file content, exactly as served (any RFC 9309-conformant
-  // document). Capped at 3 MiB.
+  // document).
   string robots_txt = 1;
   // Optional origin the robots.txt was served from, e.g. "https://example.com".
   // Used only to validate/resolve an absolute `url` passed to a matching node
@@ -230,8 +230,8 @@ message GetMatchingLineOutput {
 // The canonical sitemap envelope. The caller always supplies the raw XML
 // text of an already-fetched sitemap.xml or sitemap-index.xml document.
 message SitemapDocument {
-  // Raw sitemap XML content. Capped at 3 MiB. External entities and DTDs
-  // are rejected, not resolved.
+  // Raw sitemap XML content. External entities and DTDs are rejected, not
+  // resolved.
   string xml = 1;
 }
 
@@ -254,11 +254,8 @@ message ParseSitemapInput {
 message ParseSitemapOutput {
   repeated SitemapUrlEntry urls = 1;
   int32 count = 2;
-  // True if the document declared more than 50,000 <url> entries (the
-  // sitemaps.org protocol limit) and parsing stopped at the cap.
-  bool truncated = 3;
-  bool ok = 4;
-  RobotsToolsError error = 5;
+  bool ok = 3;
+  RobotsToolsError error = 4;
 }
 
 // One <sitemap> child entry from a sitemap-index document.
@@ -274,9 +271,8 @@ message ParseSitemapIndexInput {
 message ParseSitemapIndexOutput {
   repeated SitemapIndexEntry sitemaps = 1;
   int32 count = 2;
-  bool truncated = 3;
-  bool ok = 4;
-  RobotsToolsError error = 5;
+  bool ok = 3;
+  RobotsToolsError error = 4;
 }
 
 // Input for classifying an XML document as a sitemap urlset, a
@@ -302,9 +298,8 @@ message CountSitemapUrlsOutput {
   int32 count = 1;
   // Which kind of document was counted: "urlset" or "sitemapindex".
   string doc_type = 2;
-  bool truncated = 3;
-  bool ok = 4;
-  RobotsToolsError error = 5;
+  bool ok = 3;
+  RobotsToolsError error = 4;
 }
 
 // Input for extracting just the URLs (<loc> values) from a sitemap document
@@ -316,7 +311,6 @@ message ExtractSitemapLocsInput {
 message ExtractSitemapLocsOutput {
   repeated string locs = 1;
   string doc_type = 2;
-  bool truncated = 3;
-  bool ok = 4;
-  RobotsToolsError error = 5;
+  bool ok = 3;
+  RobotsToolsError error = 4;
 }

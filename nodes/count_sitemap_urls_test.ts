@@ -17,7 +17,6 @@ describe('CountSitemapUrls', () => {
     expect(result.getOk()).toBe(true);
     expect(result.getCount()).toBe(3);
     expect(result.getDocType()).toBe('urlset');
-    expect(result.getTruncated()).toBe(false);
   });
 
   it('counts <sitemap> entries in a sitemapindex', () => {

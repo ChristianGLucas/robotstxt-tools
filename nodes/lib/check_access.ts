@@ -4,8 +4,7 @@
 // read naturally. Keeping one implementation guarantees they can never
 // silently disagree.
 
-import { checkEmpty, checkSize, GuardError } from './guard';
-import { MAX_INPUT_BYTES } from './robots_txt';
+import { checkEmpty, GuardError } from './guard';
 import { resolveTarget } from './robots_parser_client';
 
 export interface CheckAccessResult {
@@ -22,9 +21,6 @@ export function computeCheckAccess(
 ): CheckAccessResult | { error: GuardError } {
   const emptyErr = checkEmpty(robotsTxt, 'doc.robots_txt');
   if (emptyErr) return { error: emptyErr };
-
-  const sizeErr = checkSize(robotsTxt, MAX_INPUT_BYTES, 'doc.robots_txt');
-  if (sizeErr) return { error: sizeErr };
 
   const resolved = resolveTarget(robotsTxt, siteUrl, url);
   if ('error' in resolved) return { error: resolved.error };

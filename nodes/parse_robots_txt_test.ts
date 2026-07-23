@@ -63,13 +63,6 @@ describe('ParseRobotsTxt', () => {
     expect(result.getResult()?.getError()?.getCode()).toBe('EMPTY_INPUT');
   });
 
-  it('returns a structured error, not a crash, for oversized input', () => {
-    const huge = 'User-agent: *\nDisallow: /' + 'a'.repeat(3 * 1024 * 1024);
-    const result = parseRobotsTxt(testContext, input(huge));
-    expect(result.getResult()?.getOk()).toBe(false);
-    expect(result.getResult()?.getError()?.getCode()).toBe('INPUT_TOO_LARGE');
-  });
-
   it('is deterministic across repeated calls with the same input', () => {
     const r1 = parseRobotsTxt(testContext, input(SAMPLE));
     const r2 = parseRobotsTxt(testContext, input(SAMPLE));

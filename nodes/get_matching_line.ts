@@ -1,7 +1,6 @@
 import { GetMatchingLineInput, GetMatchingLineOutput, RobotsToolsError } from '../gen/messages_pb';
 import { AxiomContext } from '../gen/axiomContext';
-import { checkEmpty, checkSize } from './lib/guard';
-import { MAX_INPUT_BYTES } from './lib/robots_txt';
+import { checkEmpty } from './lib/guard';
 import { resolveTarget } from './lib/robots_parser_client';
 
 function errorOutput(code: string, message: string): GetMatchingLineOutput {
@@ -29,9 +28,6 @@ export function getMatchingLine(ax: AxiomContext, input: GetMatchingLineInput): 
 
   const emptyErr = checkEmpty(robotsTxt, 'doc.robots_txt');
   if (emptyErr) return errorOutput(emptyErr.code, emptyErr.message);
-
-  const sizeErr = checkSize(robotsTxt, MAX_INPUT_BYTES, 'doc.robots_txt');
-  if (sizeErr) return errorOutput(sizeErr.code, sizeErr.message);
 
   const resolved = resolveTarget(robotsTxt, doc?.getSiteUrl() ?? '', input.getUrl());
   if ('error' in resolved) return errorOutput(resolved.error.code, resolved.error.message);

@@ -1,7 +1,7 @@
 import { DetectSitemapTypeInput, DetectSitemapTypeOutput, RobotsToolsError } from '../gen/messages_pb';
 import { AxiomContext } from '../gen/axiomContext';
-import { checkEmpty, checkSize } from './lib/guard';
-import { parseRoot, MAX_XML_BYTES } from './lib/sitemap';
+import { checkEmpty } from './lib/guard';
+import { parseRoot } from './lib/sitemap';
 
 function errorOutput(code: string, message: string): DetectSitemapTypeOutput {
   const err = new RobotsToolsError();
@@ -25,9 +25,6 @@ export function detectSitemapType(ax: AxiomContext, input: DetectSitemapTypeInpu
 
   const emptyErr = checkEmpty(xml, 'doc.xml');
   if (emptyErr) return errorOutput(emptyErr.code, emptyErr.message);
-
-  const sizeErr = checkSize(xml, MAX_XML_BYTES, 'doc.xml');
-  if (sizeErr) return errorOutput(sizeErr.code, sizeErr.message);
 
   const root = parseRoot(xml);
   if ('error' in root) return errorOutput(root.error.code, root.error.message);

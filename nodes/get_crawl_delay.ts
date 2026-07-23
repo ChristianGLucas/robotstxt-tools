@@ -1,8 +1,7 @@
 import { GetCrawlDelayInput, GetCrawlDelayOutput, RobotsToolsError } from '../gen/messages_pb';
 import { AxiomContext } from '../gen/axiomContext';
 import robotsParser from 'robots-parser';
-import { checkEmpty, checkSize } from './lib/guard';
-import { MAX_INPUT_BYTES } from './lib/robots_txt';
+import { checkEmpty } from './lib/guard';
 
 function errorOutput(code: string, message: string): GetCrawlDelayOutput {
   const err = new RobotsToolsError();
@@ -30,9 +29,6 @@ export function getCrawlDelay(ax: AxiomContext, input: GetCrawlDelayInput): GetC
 
   const emptyErr = checkEmpty(robotsTxt, 'doc.robots_txt');
   if (emptyErr) return errorOutput(emptyErr.code, emptyErr.message);
-
-  const sizeErr = checkSize(robotsTxt, MAX_INPUT_BYTES, 'doc.robots_txt');
-  if (sizeErr) return errorOutput(sizeErr.code, sizeErr.message);
 
   const robots = robotsParser('/robots.txt', robotsTxt);
   const delay = robots.getCrawlDelay(input.getUserAgent());

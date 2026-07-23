@@ -46,15 +46,14 @@ Built for the [Axiom](https://axiom.dev) marketplace, handle
 | `CountSitemapUrls` | Count the entries in a sitemap document of either kind. |
 | `ExtractSitemapLocs` | Just the `<loc>` values, from either document kind. |
 
-## Safety
+## Notes
 
-- Input is capped at 3 MiB (headroom under Axiom's ~4 MiB transport limit).
-- Sitemap parsing stops at 50,000 entries (the sitemaps.org protocol limit)
-  and reports `truncated=true`.
 - Malformed input always returns a structured `{code, message}` error —
   never a crash.
 - Every node is a pure, stateless, single-input-to-single-output transform:
   no network calls, no wall-clock, no randomness.
+- The platform owns request/response size and resource limits; this package
+  contains no size or resource caps of its own.
 
 ## License
 
